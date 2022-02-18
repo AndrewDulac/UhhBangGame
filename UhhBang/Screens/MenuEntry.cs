@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using UhhGame.StateManagement;
+using UhhGame.Collisions;
 
 namespace UhhGame.Screens
 {
@@ -11,9 +12,15 @@ namespace UhhGame.Screens
     // when the menu entry is selected.
     public class MenuEntry
     {
+        private BoundingRectangle bounds;
         private string _text;
         private float _selectionFade;    // Entries transition out of the selection effect when they are deselected
         private Vector2 _position;    // This is set by the MenuScreen each frame in Update
+
+        /// <summary>
+        /// bounding volume of the sprite
+        /// </summary>
+        public BoundingRectangle Bounds => bounds;
 
         public string Text
         {
@@ -71,7 +78,8 @@ namespace UhhGame.Screens
             var font = screenManager.Fonts["menufont"];
 
             var origin = new Vector2(0, font.LineSpacing / 2);
-
+            var height = GetHeight(screen);
+            bounds = new BoundingRectangle(Position - new Vector2(0, height/2), GetWidth(screen), height);
             spriteBatch.DrawString(font, _text, _position, color, 0,
                 origin, scale, SpriteEffects.None, 0);
         }

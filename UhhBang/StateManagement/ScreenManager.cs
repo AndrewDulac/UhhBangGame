@@ -36,6 +36,11 @@ namespace UhhGame.StateManagement
         public Texture2D BlankTexture { get; private set; }
 
         /// <summary>
+        /// A mousesprite object that can be used by any screen.
+        /// </summary>
+        public Texture2D CursorTexture { get; private set; }
+
+        /// <summary>
         /// Constructs a new ScreenManager
         /// </summary>
         /// <param name="game">The game this ScreenManager belongs to</param>
@@ -64,7 +69,7 @@ namespace UhhGame.StateManagement
             Fonts["Britannic_Bold_Title"] = _content.Load<SpriteFont>("Fonts/Britannic_Bold_Title");
             Fonts["gamefont"] = _content.Load<SpriteFont>("Fonts/gamefont");
             Fonts["menufont"] = _content.Load<SpriteFont>("Fonts/menufont");
-
+            CursorTexture = _content.Load<Texture2D>("Sprites/pointer");
             BlankTexture = _content.Load<Texture2D>("blank");
 
             // Tell each of the screens to load thier content 

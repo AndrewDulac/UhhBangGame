@@ -56,6 +56,17 @@ namespace UhhGame.Collisions
         }
 
         /// <summary>
+        /// Detects collision between two BoundingRectangles
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns>True for collision, false otherwise</returns>
+        public bool CollidesWith(Point other)
+        {
+            return CollisionHelper.Collides(other, this);
+        }
+
+        /// <summary>
         /// Checks if this rectagnle is colliding with a BoundingCircle
         /// </summary>
         /// <param name="other"></param>

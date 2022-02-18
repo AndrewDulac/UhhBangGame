@@ -18,11 +18,14 @@ namespace UhhGame.StateManagement
 
         public readonly KeyboardState[] CurrentKeyboardStates;
         public readonly GamePadState[] CurrentGamePadStates;
+        public MouseState CurrentMouseState;
 
         private readonly KeyboardState[] _lastKeyboardStates;
         private readonly GamePadState[] _lastGamePadStates;
+        private MouseState _lastMouseState;
 
         public readonly bool[] GamePadWasConnected;
+        public Point MouseLocation { get => CurrentMouseState.Position; }
 
         /// <summary>
         /// Constructs a new InputState
@@ -31,9 +34,11 @@ namespace UhhGame.StateManagement
         {
             CurrentKeyboardStates = new KeyboardState[MaxInputs];
             CurrentGamePadStates = new GamePadState[MaxInputs];
+            CurrentMouseState = new MouseState();
 
             _lastKeyboardStates = new KeyboardState[MaxInputs];
             _lastGamePadStates = new GamePadState[MaxInputs];
+            _lastMouseState = new MouseState();
 
             GamePadWasConnected = new bool[MaxInputs];
         }
@@ -41,6 +46,8 @@ namespace UhhGame.StateManagement
         // Reads the latest user input state.
         public void Update()
         {
+            _lastMouseState = CurrentMouseState;
+            CurrentMouseState = Mouse.GetState();
             for (int i = 0; i < MaxInputs; i++)
             {
                 _lastKeyboardStates[i] = CurrentKeyboardStates[i];

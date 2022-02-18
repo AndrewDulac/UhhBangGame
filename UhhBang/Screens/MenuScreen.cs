@@ -15,6 +15,7 @@ namespace UhhGame.Screens
         private int _selectedEntry;
         private readonly string _menuTitle;
 
+        private readonly MouseSprite _mouse;
         private readonly InputAction _menuUp;
         private readonly InputAction _menuDown;
         private readonly InputAction _menuSelect;
@@ -30,6 +31,7 @@ namespace UhhGame.Screens
             TransitionOnTime = TimeSpan.FromSeconds(0.5);
             TransitionOffTime = TimeSpan.FromSeconds(0.5);
 
+            _mouse = new MouseSprite();
             _menuUp = new InputAction(
                 new[] { Buttons.DPadUp, Buttons.LeftThumbstickUp },
                 new[] { Keys.Up }, true);
@@ -54,10 +56,11 @@ namespace UhhGame.Screens
             // OnSelectEntry and OnCancel, so they can tell which player triggered them.
             PlayerIndex playerIndex;
 
+            _mouse.Update(input);
+
             if (_menuUp.Occurred(input, ControllingPlayer, out playerIndex))
             {
                 _selectedEntry--;
-
                 if (_selectedEntry < 0)
                     _selectedEntry = _menuEntries.Count - 1;
             }
@@ -132,6 +135,10 @@ namespace UhhGame.Screens
             // Update each nested MenuEntry object.
             for (int i = 0; i < _menuEntries.Count; i++)
             {
+                if (MenuEntries[i].Bounds.CollidesWith(_mouse.Bounds))
+                {
+                    _selectedEntry = i;
+                }
                 bool isSelected = IsActive && i == _selectedEntry;
                 _menuEntries[i].Update(this, isSelected, gameTime);
             }
@@ -147,7 +154,7 @@ namespace UhhGame.Screens
             var font = ScreenManager.Fonts["gamefont"];
 
             spriteBatch.Begin();
-
+            
             for (int i = 0; i < _menuEntries.Count; i++)
             {
                 var menuEntry = _menuEntries[i];
@@ -170,7 +177,7 @@ namespace UhhGame.Screens
 
             spriteBatch.DrawString(font, _menuTitle, titlePosition, titleColor,
                 0, titleOrigin, titleScale, SpriteEffects.None, 0);
-
+            _mouse.Draw(spriteBatch, ScreenManager.CursorTexture);
             spriteBatch.End();
         }
     }
