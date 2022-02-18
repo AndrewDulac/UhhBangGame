@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GameArchitectureExample.StateManagement;
+using UhhGame.StateManagement;
 
-namespace GameArchitectureExample.Screens
+namespace UhhGame.Screens
 {
     // This screen implements the actual game logic. It is just a
     // placeholder to get the idea across: you'll probably want to

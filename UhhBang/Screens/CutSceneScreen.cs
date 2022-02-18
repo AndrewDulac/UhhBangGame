@@ -4,11 +4,11 @@ using System.Text;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
-using GameArchitectureExample.StateManagement;
+using UhhGame.StateManagement;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GameArchitectureExample.Screens
+namespace UhhGame.Screens
 {
     public class CutSceneScreen : GameScreen
     {

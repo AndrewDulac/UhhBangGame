@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace GameArchitectureExample
+namespace UhhGame
 {
     public static class Program
     {

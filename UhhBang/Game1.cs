@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GameArchitectureExample.Screens;
-using GameArchitectureExample.StateManagement;
+using UhhGame.Screens;
+using UhhGame.StateManagement;
 
-namespace GameArchitectureExample
+namespace UhhGame
 {
     // Sample showing how to manage different game states, with transitions
     // between menu screens, a loading screen, the game itself, and a pause
@@ -34,7 +34,6 @@ namespace GameArchitectureExample
         {
             _screenManager.AddScreen(new BackgroundScreen(), null);
             _screenManager.AddScreen(new MainMenuScreen(), null);
-            _screenManager.AddScreen(new SplashScreen(), null);
         }
 
         protected override void Initialize()

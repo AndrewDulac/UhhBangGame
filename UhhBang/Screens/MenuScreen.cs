@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GameArchitectureExample.StateManagement;
+using UhhGame.StateManagement;
 
-namespace GameArchitectureExample.Screens
+namespace UhhGame.Screens
 {
     // Base class for screens that contain a menu of options. The user can
     // move up and down to select an entry, or cancel to back out of the screen.
@@ -109,17 +109,19 @@ namespace GameArchitectureExample.Screens
             {
                 // each entry is to be centered horizontally
                 position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - menuEntry.GetWidth(this) / 2;
+                position.Y += menuEntry.GetHeight(this);
+
 
                 if (ScreenState == ScreenState.TransitionOn)
-                    position.X -= transitionOffset * 256;
+                    position.Y -= transitionOffset * 128;
                 else
-                    position.X += transitionOffset * 512;
+                    position.Y += transitionOffset * 256;
 
                 // set the entry's position
                 menuEntry.Position = position;
 
                 // move down for the next entry the size of this entry
-                position.Y += menuEntry.GetHeight(this);
+                
             }
         }
 
@@ -142,7 +144,7 @@ namespace GameArchitectureExample.Screens
 
             var graphics = ScreenManager.GraphicsDevice;
             var spriteBatch = ScreenManager.SpriteBatch;
-            var font = ScreenManager.Font;
+            var font = ScreenManager.Fonts["gamefont"];
 
             spriteBatch.Begin();
 

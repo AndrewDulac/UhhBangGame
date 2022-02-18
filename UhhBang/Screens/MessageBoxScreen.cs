@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using GameArchitectureExample.StateManagement;
+using UhhGame.StateManagement;
 
-namespace GameArchitectureExample.Screens
+namespace UhhGame.Screens
 {
     // A popup message box screen, used to display "are you sure?" confirmation messages.
     public class MessageBoxScreen : GameScreen
@@ -76,7 +76,7 @@ namespace GameArchitectureExample.Screens
         public override void Draw(GameTime gameTime)
         {
             var spriteBatch = ScreenManager.SpriteBatch;
-            var font = ScreenManager.Font;
+            var font = ScreenManager.Fonts["Britannic_Bold_12"];
 
             // Darken down any other screens that were drawn beneath the popup.
             ScreenManager.FadeBackBufferToBlack(TransitionAlpha * 2 / 3);

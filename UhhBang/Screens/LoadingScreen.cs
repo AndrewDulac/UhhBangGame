@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using GameArchitectureExample.StateManagement;
+using UhhGame.StateManagement;
 
-namespace GameArchitectureExample.Screens
+namespace UhhGame.Screens
 {
     // The loading screen coordinates transitions between the menu system and the
     // game itself. Normally one screen will transition off at the same time as
@@ -87,7 +87,7 @@ namespace GameArchitectureExample.Screens
             if (_loadingIsSlow)
             {
                 var spriteBatch = ScreenManager.SpriteBatch;
-                var font = ScreenManager.Font;
+                var font = ScreenManager.Fonts["arial"];
 
                 const string message = "Loading...";
 

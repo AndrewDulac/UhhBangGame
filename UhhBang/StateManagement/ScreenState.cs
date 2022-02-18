@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameArchitectureExample.StateManagement
+namespace UhhGame.StateManagement
 {
     /// <summary>
     /// Enumerations of the possible screen states

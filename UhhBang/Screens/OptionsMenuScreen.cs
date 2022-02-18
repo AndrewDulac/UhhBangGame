@@ -1,6 +1,6 @@
 ﻿
 
-namespace GameArchitectureExample.Screens
+namespace UhhGame.Screens
 {
     // The options screen is brought up over the top of the main menu
     // screen, and gives the user a chance to configure the game

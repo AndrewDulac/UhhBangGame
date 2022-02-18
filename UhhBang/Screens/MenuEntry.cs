@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using GameArchitectureExample.StateManagement;
+using UhhGame.StateManagement;
 
-namespace GameArchitectureExample.Screens
+namespace UhhGame.Screens
 {
     // Helper class represents a single entry in a MenuScreen. By default this
     // just draws the entry text string, but it can be customized to display menu
@@ -68,7 +68,7 @@ namespace GameArchitectureExample.Screens
             // Draw text, centered on the middle of each line.
             var screenManager = screen.ScreenManager;
             var spriteBatch = screenManager.SpriteBatch;
-            var font = screenManager.Font;
+            var font = screenManager.Fonts["menufont"];
 
             var origin = new Vector2(0, font.LineSpacing / 2);
 
@@ -78,12 +78,12 @@ namespace GameArchitectureExample.Screens
 
         public virtual int GetHeight(MenuScreen screen)
         {
-            return screen.ScreenManager.Font.LineSpacing;
+            return screen.ScreenManager.Fonts["menufont"].LineSpacing;
         }
 
         public virtual int GetWidth(MenuScreen screen)
         {
-            return (int)screen.ScreenManager.Font.MeasureString(Text).X;
+            return (int)screen.ScreenManager.Fonts["menufont"].MeasureString(Text).X;
         }
     }
 }

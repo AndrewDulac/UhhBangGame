@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace GameArchitectureExample.StateManagement
+namespace UhhGame.StateManagement
 {
     /// <summary>
     /// Defines an action that is designated by some set of buttons and/or keys.

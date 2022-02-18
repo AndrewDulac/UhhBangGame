@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace GameArchitectureExample.StateManagement
+namespace UhhGame.StateManagement
 {
     /// <summary>
     /// The ScreenManager is a component which manages one or more GameScreen instance.
@@ -26,9 +26,9 @@ namespace GameArchitectureExample.StateManagement
         public SpriteBatch SpriteBatch { get; private set; }
 
         /// <summary>
-        /// A SpriteFont shared by all GameScreens
+        /// A Dictionary of SpriteFonts shared by all GameScreens, indexable by sf name
         /// </summary>
-        public SpriteFont Font { get; private set; }
+        public Dictionary<string, SpriteFont> Fonts { get; private set; } = new Dictionary<string, SpriteFont>();
 
         /// <summary>
         /// A blank texture that can be used by the screens.
@@ -59,7 +59,12 @@ namespace GameArchitectureExample.StateManagement
         protected override void LoadContent()
         {
             SpriteBatch = new SpriteBatch(GraphicsDevice);
-            Font = _content.Load<SpriteFont>("menufont");
+            Fonts["arial"] = _content.Load<SpriteFont>("Fonts/arial");
+            Fonts["Britannic_Bold_12"] = _content.Load<SpriteFont>("Fonts/Britannic_Bold_12");
+            Fonts["Britannic_Bold_Title"] = _content.Load<SpriteFont>("Fonts/Britannic_Bold_Title");
+            Fonts["gamefont"] = _content.Load<SpriteFont>("Fonts/gamefont");
+            Fonts["menufont"] = _content.Load<SpriteFont>("Fonts/menufont");
+
             BlankTexture = _content.Load<Texture2D>("blank");
 
             // Tell each of the screens to load thier content 
