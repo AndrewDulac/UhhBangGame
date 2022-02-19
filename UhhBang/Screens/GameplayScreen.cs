@@ -15,9 +15,14 @@ namespace UhhGame.Screens
     {
         private ContentManager _content;
         private SpriteFont _gameFont;
+        private PersonSprite player;
 
-        private Vector2 _playerPosition = new Vector2(100, 100);
+        private Vector2 _playerMovement;
+        private DirectionEnum _playerDirection;
+
         private Vector2 _enemyPosition = new Vector2(100, 100);
+
+        private Texture2D _backgroundTexture;
 
         private readonly Random _random = new Random();
 
@@ -40,8 +45,10 @@ namespace UhhGame.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
-            _gameFont = _content.Load<SpriteFont>("gamefont");
-
+            player = new PersonSprite(new Vector2(30, ScreenManager.GraphicsDevice.Viewport.Height - 50), 2f);
+            var backgroundScreen = new BackgroundScreen();
+            ScreenManager.AddScreen(backgroundScreen, null);
+            player.LoadContent(_content);
             // A real game would probably have more content than this sample, so
             // it would take longer to load. We simulate that by delaying for a
             // while, giving you a chance to admire the beautiful loading screen.
@@ -50,6 +57,7 @@ namespace UhhGame.Screens
             // once the load has finished, we use ResetElapsedTime to tell the game's
             // timing mechanism that we have just finished a very long frame, and that
             // it should not try to catch up.
+            
             ScreenManager.Game.ResetElapsedTime();
         }
 
@@ -80,17 +88,7 @@ namespace UhhGame.Screens
             {
                 // Apply some random jitter to make the enemy move around.
                 const float randomization = 10;
-
-                _enemyPosition.X += (float)(_random.NextDouble() - 0.5) * randomization;
-                _enemyPosition.Y += (float)(_random.NextDouble() - 0.5) * randomization;
-
-                // Apply a stabilizing force to stop the enemy moving off the screen.
-                var targetPosition = new Vector2(
-                    ScreenManager.GraphicsDevice.Viewport.Width / 2 - _gameFont.MeasureString("Insert Gameplay Here").X / 2,
-                    200);
-
-                _enemyPosition = Vector2.Lerp(_enemyPosition, targetPosition, 0.05f);
-
+                player.Update(_playerMovement, _playerDirection, 200);
                 // This game isn't very fun! You could probably improve
                 // it by inserting something more interesting in this space :-)
             }
@@ -121,47 +119,75 @@ namespace UhhGame.Screens
             }
             else
             {
-                // Otherwise move the player position.
-                var movement = Vector2.Zero;
+                #region direction
+                // TODO: Assign actions based on input
+                // Right thumbstick
+                _playerMovement = Vector2.Zero;
+                _playerMovement += gamePadState.ThumbSticks.Left * 1;
 
-                if (keyboardState.IsKeyDown(Keys.Left))
-                    movement.X--;
+                // WASD keys:
+                if (keyboardState.IsKeyDown(Keys.Left) ||
+                    keyboardState.IsKeyDown(Keys.A))
+                    _playerMovement += new Vector2(-1, 0);
+                if (keyboardState.IsKeyDown(Keys.Right) ||
+                    keyboardState.IsKeyDown(Keys.D))
+                    _playerMovement += new Vector2(1, 0);
+                if (keyboardState.IsKeyDown(Keys.Up) ||
+                    keyboardState.IsKeyDown(Keys.W))
+                    _playerMovement += new Vector2(0, -1);
+                if (keyboardState.IsKeyDown(Keys.Down) ||
+                    keyboardState.IsKeyDown(Keys.S))
+                    _playerMovement += new Vector2(0, 1);
+                #endregion
 
-                if (keyboardState.IsKeyDown(Keys.Right))
-                    movement.X++;
+                if (Math.Abs(_playerMovement.X) > 0 || Math.Abs(_playerMovement.Y) > 0)
+                {
+                    // should probably change this to if statements to capture gamepadinput.
 
-                if (keyboardState.IsKeyDown(Keys.Up))
-                    movement.Y--;
+                    if (_playerMovement.X == 0 && _playerMovement.Y < -.01f)
+                        _playerDirection = DirectionEnum.Up;
 
-                if (keyboardState.IsKeyDown(Keys.Down))
-                    movement.Y++;
+                    else if (_playerMovement.X == 0 && _playerMovement.Y > .01f)
+                        _playerDirection = DirectionEnum.Down;
 
-                var thumbstick = gamePadState.ThumbSticks.Left;
+                    else if (_playerMovement.X < -.01f && _playerMovement.Y == 0)
+                        _playerDirection = DirectionEnum.Left;
 
-                movement.X += thumbstick.X;
-                movement.Y -= thumbstick.Y;
+                    else if (_playerMovement.X > .01f && _playerMovement.Y == 0)
+                        _playerDirection = DirectionEnum.Right;
 
-                if (movement.Length() > 1)
-                    movement.Normalize();
+                    else if (_playerMovement.X > .01f && _playerMovement.Y < -.01f)
+                        _playerDirection = DirectionEnum.UpRight;
 
-                _playerPosition += movement * 8f;
+                    else if (_playerMovement.X > .01f && _playerMovement.Y > .01f)
+                        _playerDirection = DirectionEnum.DownRight;
+
+                    else if (_playerMovement.X < -.01f && _playerMovement.Y > .01f)
+                        _playerDirection = DirectionEnum.DownLeft;
+
+                    else if (_playerMovement.X < -.01f && _playerMovement.Y < -.01f)
+                        _playerDirection = DirectionEnum.UpLeft;
+
+                    else _playerDirection = DirectionEnum.Down;
+
+                    _playerMovement = _playerMovement * (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    if (Math.Abs(_playerMovement.X) + Math.Abs(_playerMovement.Y) > 1) _playerMovement.Normalize();
+                }
+
+
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
             // This game has a blue background. Why? Because!
-            ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
+            //ScreenManager.GraphicsDevice.Clear(ClearOptions.Target, Color.CornflowerBlue, 0, 0);
 
             // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;
 
             spriteBatch.Begin();
-
-            spriteBatch.DrawString(_gameFont, "// TODO", _playerPosition, Color.Green);
-            spriteBatch.DrawString(_gameFont, "Insert Gameplay Here",
-                                   _enemyPosition, Color.DarkRed);
-
+            player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
             // If the game is transitioning on or off, fade it out to black.

@@ -21,14 +21,16 @@ namespace UhhGame.Screens
         private readonly bool _loadingIsSlow;
         private bool _otherScreensAreGone;
         private readonly GameScreen[] _screensToLoad;
+        private BackgroundScreen backgroundScreen;
 
         // Constructor is private: loading screens should be activated via the static Load method instead.
         private LoadingScreen(ScreenManager screenManager, bool loadingIsSlow, GameScreen[] screensToLoad)
         {
             _loadingIsSlow = loadingIsSlow;
             _screensToLoad = screensToLoad;
-
-            TransitionOnTime = TimeSpan.FromSeconds(0.5);
+            backgroundScreen = new BackgroundScreen();
+            screenManager.AddScreen(backgroundScreen, null);
+            TransitionOnTime = TimeSpan.FromSeconds(.5);
         }
 
         // Activates the loading screen.
@@ -53,8 +55,8 @@ namespace UhhGame.Screens
             // off, it is time to actually perform the load.
             if (_otherScreensAreGone)
             {
+                ScreenManager.RemoveScreen(backgroundScreen);
                 ScreenManager.RemoveScreen(this);
-
                 foreach (var screen in _screensToLoad)
                 {
                     if (screen != null)
@@ -75,7 +77,7 @@ namespace UhhGame.Screens
             // method, rather than in Update, because it isn't enough just for the
             // screens to be gone: in order for the transition to look good we must
             // have actually drawn a frame without them before we perform the load.
-            if (ScreenState == ScreenState.Active && ScreenManager.GetScreens().Length == 1)
+            if (ScreenState == ScreenState.Active && ScreenManager.GetScreens().Length == 2)
                 _otherScreensAreGone = true;
 
             // The gameplay screen takes a while to load, so we display a loading
