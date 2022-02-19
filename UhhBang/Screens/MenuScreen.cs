@@ -62,28 +62,36 @@ namespace UhhGame.Screens
 
             _mouse.Update(input);
 
-            if (_menuUp.Occurred(input, ControllingPlayer, out playerIndex))
+            if (_mouseColliding)
             {
-                _selectedEntry--;
-                if (_selectedEntry < 0)
-                    _selectedEntry = _menuEntries.Count - 1;
+                if (_leftClick.LeftClickOccurred(input, ControllingPlayer, out playerIndex))
+                {
+                    OnSelectEntry(_selectedEntry, playerIndex);
+                }
             }
-
-            if (_menuDown.Occurred(input, ControllingPlayer, out playerIndex))
+            else
             {
-                _selectedEntry++;
+                if (_menuUp.Occurred(input, ControllingPlayer, out playerIndex))
+                {
+                    _selectedEntry--;
+                    if (_selectedEntry < 0)
+                        _selectedEntry = _menuEntries.Count - 1;
+                }
 
-                if (_selectedEntry >= _menuEntries.Count)
-                    _selectedEntry = 0;
+                if (_menuDown.Occurred(input, ControllingPlayer, out playerIndex))
+                {
+                    _selectedEntry++;
+
+                    if (_selectedEntry >= _menuEntries.Count)
+                        _selectedEntry = 0;
+                }
+
+                if (_menuSelect.Occurred(input, ControllingPlayer, out playerIndex))
+                {
+                    OnSelectEntry(_selectedEntry, playerIndex);
+                }
             }
-
-            if (_menuSelect.Occurred(input, ControllingPlayer, out playerIndex) || 
-                (_mouseColliding && _leftClick.LeftClickOccurred(input, ControllingPlayer, out playerIndex)))
-            {
-                OnSelectEntry(_selectedEntry, playerIndex);
-            }
-
-            else if (_menuCancel.Occurred(input, ControllingPlayer, out playerIndex))
+            if (_menuCancel.Occurred(input, ControllingPlayer, out playerIndex))
             {
                 OnCancel(playerIndex);
             }

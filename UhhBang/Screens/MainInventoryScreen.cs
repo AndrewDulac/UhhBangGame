@@ -13,14 +13,14 @@ namespace UhhGame.Screens
         private ContentManager _content;
         private Dictionary<string, string> _assets = new Dictionary<string, string>()
         {
-            {"star", "Sprites/star" },
-            {"star1", "Sprites/star" },
-            {"star2", "Sprites/star" },
-            {"star3", "Sprites/star" },
-            {"star4", "Sprites/star" },
-            {"star5", "Sprites/star" },
-            {"star6", "Sprites/star" },
-            {"star7", "Sprites/star" },
+            {"crate", "Sprites/crate" },
+            {"crate1", "Sprites/crate" },
+            {"crate2", "Sprites/crate" },
+            {"crate3", "Sprites/crate" },
+            {"crate4", "Sprites/crate" },
+            {"crate5", "Sprites/crate" },
+            {"crate6", "Sprites/crate" },
+            {"crate7", "Sprites/crate" },
         };
 
         public MainInventoryScreen() : base("Inventory")

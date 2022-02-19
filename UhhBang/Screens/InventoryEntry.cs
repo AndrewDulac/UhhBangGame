@@ -70,11 +70,7 @@ namespace UhhGame.Screens
         public virtual void Draw(InventoryScreen screen, bool isSelected, GameTime gameTime)
         {
             var color = isSelected ? Color.Yellow : Color.White;
-
-            // Pulsate the size of the selected menu entry.
-            double time = gameTime.TotalGameTime.TotalSeconds;
-            float pulsate = (float)Math.Sin(time * 6) + 1;
-            float scale = _scale + pulsate * 0.05f * _selectionFade;
+            var scale = isSelected ? 1.1f * _scale : _scale;
 
             // Modify the alpha to fade text out during transitions.
             color *= screen.TransitionAlpha;
@@ -83,27 +79,15 @@ namespace UhhGame.Screens
             var screenManager = screen.ScreenManager;
             var spriteBatch = screenManager.SpriteBatch;
 
-            var origin = new Vector2(0,0);
-            bounds = new BoundingRectangle(_position - new Vector2(0,0), GetWidth(), GetHeight());
-            var tscale = (float)bounds.Width / screen.ScreenManager.CursorTexture.Width;
-            spriteBatch.Draw(
-                screen.ScreenManager.CursorTexture,
-                _position,
-                null,
-                color,
-                0,
-                new Vector2(0,0),
-                tscale,
-                SpriteEffects.None,
-                0
-             );
+            var origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
+            bounds = new BoundingRectangle(_position - new Vector2(GetWidth()/2,GetHeight()/2), GetWidth(), GetHeight());
             spriteBatch.Draw(
                 _texture,
                 _position,
                 null,
                 color, 
                 0,
-                new Vector2(_texture.Width/2,_texture.Height/2),
+                origin,
                 scale,
                 SpriteEffects.None,
                 0

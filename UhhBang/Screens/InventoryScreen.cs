@@ -12,7 +12,7 @@ namespace UhhGame.Screens
     public abstract class InventoryScreen : GameScreen
     {
         private const int NUM_COLS = 4;
-        protected const float ITEM_SIZE = 64f;
+        protected const float ITEM_SIZE = 50f;
 
         private readonly List<InventoryEntry> _inventoryEntries = new List<InventoryEntry>();
         private int _selectedEntry;
@@ -56,7 +56,7 @@ namespace UhhGame.Screens
                 new[] { Keys.Enter, Keys.Space}, true);
             _inventoryCancel = new InputAction(
                 new[] { Buttons.B, Buttons.Back },
-                new[] { Keys.Back, Keys.Escape }, true);
+                new[] { Keys.Back, Keys.Tab, Keys.Escape }, true);
             _leftClick = new InputAction(
                 true, true);
         }
@@ -72,47 +72,53 @@ namespace UhhGame.Screens
             PlayerIndex playerIndex;
 
             _mouse.Update(input);
-
-            if (_inventoryUp.Occurred(input, ControllingPlayer, out playerIndex))
+            if (_mouseColliding)
             {
-                _selectedEntry -= NUM_COLS;
-                if (_selectedEntry < 0)
-                    _selectedEntry = _inventoryEntries.Count - NUM_COLS;
-            }
-
-            if (_inventoryDown.Occurred(input, ControllingPlayer, out playerIndex))
-            {
-                _selectedEntry += NUM_COLS;
-
-                if (_selectedEntry >= _inventoryEntries.Count)
-                    _selectedEntry = _selectedEntry - _inventoryEntries.Count;
-            }
-
-            if (_inventoryLeft.Occurred(input, ControllingPlayer, out playerIndex))
-            {
-                _selectedEntry -= 1;
-                if ((_selectedEntry % NUM_COLS) == NUM_COLS - 1 || _selectedEntry < 0)
+                if (_leftClick.LeftClickOccurred(input, ControllingPlayer, out playerIndex))
                 {
-                    _selectedEntry += NUM_COLS; //should bring to end of column
+                    OnSelectEntry(_selectedEntry, playerIndex);
                 }
             }
-
-            if (_inventoryRight.Occurred(input, ControllingPlayer, out playerIndex))
+            else
             {
-                _selectedEntry += 1;
-                if ((_selectedEntry % NUM_COLS) == 0)
+                if (_inventoryUp.Occurred(input, ControllingPlayer, out playerIndex))
                 {
-                    _selectedEntry -= NUM_COLS; //should bring to beginnning of column
+                    _selectedEntry -= NUM_COLS;
+                    if (_selectedEntry < 0)
+                        _selectedEntry = _inventoryEntries.Count + _selectedEntry;
+                }
+
+                if (_inventoryDown.Occurred(input, ControllingPlayer, out playerIndex))
+                {
+                    _selectedEntry += NUM_COLS;
+
+                    if (_selectedEntry >= _inventoryEntries.Count)
+                        _selectedEntry = _selectedEntry - _inventoryEntries.Count;
+                }
+
+                if (_inventoryLeft.Occurred(input, ControllingPlayer, out playerIndex))
+                {
+                    _selectedEntry -= 1;
+                    if ((_selectedEntry % NUM_COLS) == NUM_COLS - 1 || _selectedEntry < 0)
+                    {
+                        _selectedEntry += NUM_COLS; //should bring to end of column
+                    }
+                }
+
+                if (_inventoryRight.Occurred(input, ControllingPlayer, out playerIndex))
+                {
+                    _selectedEntry += 1;
+                    if ((_selectedEntry % NUM_COLS) == 0)
+                    {
+                        _selectedEntry -= NUM_COLS; //should bring to beginnning of column
+                    }
+                }
+                if (_inventorySelect.Occurred(input, ControllingPlayer, out playerIndex))
+                {
+                    OnSelectEntry(_selectedEntry, playerIndex);
                 }
             }
-
-            if (_inventorySelect.Occurred(input, ControllingPlayer, out playerIndex) || 
-                (_mouseColliding && _leftClick.LeftClickOccurred(input, ControllingPlayer, out playerIndex)))
-            {
-                OnSelectEntry(_selectedEntry, playerIndex);
-            }
-
-            else if (_inventoryCancel.Occurred(input, ControllingPlayer, out playerIndex))
+            if (_inventoryCancel.Occurred(input, ControllingPlayer, out playerIndex))
             {
                 OnCancel(playerIndex);
             }
@@ -154,8 +160,8 @@ namespace UhhGame.Screens
                 var xloc = i % NUM_COLS;
                 var yloc = i / NUM_COLS;
                 // each entry is to be centered horizontally
-                position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - width * NUM_COLS / 2 + (width * xloc);
-                position.Y = yloc * height + ystart;
+                position.X = ScreenManager.GraphicsDevice.Viewport.Width / 2 - width * ( 0.1f + NUM_COLS / 2) + (width * (0.5f + 1.1f * xloc));
+                position.Y = yloc * 1.1f * height + ystart;
 
 
                 if (ScreenState == ScreenState.TransitionOn)
