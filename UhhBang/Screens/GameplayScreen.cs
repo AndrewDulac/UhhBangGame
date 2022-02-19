@@ -28,6 +28,7 @@ namespace UhhGame.Screens
 
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
+        private readonly InputAction _inventoryAction;
 
         public GameplayScreen()
         {
@@ -37,6 +38,9 @@ namespace UhhGame.Screens
             _pauseAction = new InputAction(
                 new[] { Buttons.Start, Buttons.Back },
                 new[] { Keys.Back, Keys.Escape }, true);
+            _inventoryAction = new InputAction(
+                new[] { Buttons.DPadUp },
+                new[] { Keys.Tab }, true);
         }
 
         // Load graphics content for the game
@@ -116,6 +120,10 @@ namespace UhhGame.Screens
             if (_pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+            }
+            if (_inventoryAction.Occurred(input, ControllingPlayer, out player))
+            {
+                ScreenManager.AddScreen(new MainInventoryScreen(), ControllingPlayer);
             }
             else
             {
