@@ -103,7 +103,7 @@ namespace UhhGame.Screens
                 null,
                 color, 
                 0,
-                origin,
+                new Vector2(GetWidth()/2,GetHeight()/2),
                 scale,
                 SpriteEffects.None,
                 0
