@@ -1,6 +1,6 @@
 ﻿// Adapted from the MonoGame port of the original XNA GameStateExample 
 // https://github.com/tomizechsterson/game-state-management-monogame
-
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
@@ -18,14 +18,13 @@ namespace UhhGame.StateManagement
 
         public readonly KeyboardState[] CurrentKeyboardStates;
         public readonly GamePadState[] CurrentGamePadStates;
-        public MouseState CurrentMouseState;
+        public MouseState[] CurrentMouseStates;
 
         private readonly KeyboardState[] _lastKeyboardStates;
         private readonly GamePadState[] _lastGamePadStates;
-        private MouseState _lastMouseState;
+        private MouseState[] _lastMouseStates;
 
         public readonly bool[] GamePadWasConnected;
-        public Point MouseLocation { get => CurrentMouseState.Position; }
 
         /// <summary>
         /// Constructs a new InputState
@@ -34,11 +33,11 @@ namespace UhhGame.StateManagement
         {
             CurrentKeyboardStates = new KeyboardState[MaxInputs];
             CurrentGamePadStates = new GamePadState[MaxInputs];
-            CurrentMouseState = new MouseState();
+            CurrentMouseStates = new MouseState[MaxInputs];
 
             _lastKeyboardStates = new KeyboardState[MaxInputs];
             _lastGamePadStates = new GamePadState[MaxInputs];
-            _lastMouseState = new MouseState();
+            _lastMouseStates = new MouseState[MaxInputs];
 
             GamePadWasConnected = new bool[MaxInputs];
         }
@@ -46,21 +45,72 @@ namespace UhhGame.StateManagement
         // Reads the latest user input state.
         public void Update()
         {
-            _lastMouseState = CurrentMouseState;
-            CurrentMouseState = Mouse.GetState();
+            
+            
             for (int i = 0; i < MaxInputs; i++)
             {
                 _lastKeyboardStates[i] = CurrentKeyboardStates[i];
                 _lastGamePadStates[i] = CurrentGamePadStates[i];
+                _lastMouseStates[i] = CurrentMouseStates[i];
 
                 CurrentKeyboardStates[i] = Keyboard.GetState();
                 CurrentGamePadStates[i] = GamePad.GetState((PlayerIndex)i);
+                CurrentMouseStates[i] = Mouse.GetState();
 
                 // Keep track of whether a gamepad has ever been
                 // connected, so we can detect if it is unplugged.
                 if (CurrentGamePadStates[i].IsConnected)
                     GamePadWasConnected[i] = true;
             }
+        }
+
+        /// <summary>
+        /// Helper for checking if a key was pressed during this update. The
+        /// controllingPlayer parameter specifies which player to read input for.
+        /// If this is null, it will accept input from any player. When a keypress
+        /// is detected, the output playerIndex reports which player pressed it.
+        /// </summary>
+        public bool IsLeftMouseButtonPressed(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        {
+            if (controllingPlayer.HasValue)
+            {
+                // Read input from the specified player.
+                playerIndex = controllingPlayer.Value;
+
+                int i = (int)playerIndex;
+
+                return CurrentMouseStates[i].LeftButton == ButtonState.Pressed;
+            }
+
+            // Accept input from any player.
+            return IsLeftMouseButtonPressed(PlayerIndex.One, out playerIndex) ||
+                    IsLeftMouseButtonPressed(PlayerIndex.Two, out playerIndex) ||
+                    IsLeftMouseButtonPressed(PlayerIndex.Three, out playerIndex) ||
+                    IsLeftMouseButtonPressed(PlayerIndex.Four, out playerIndex);
+        }
+
+        // Helper for checking if a button was newly pressed during this update.
+        // The controllingPlayer parameter specifies which player to read input for.
+        // If this is null, it will accept input from any player. When a button press
+        // is detected, the output playerIndex reports which player pressed it.
+        public bool IsNewLeftMouseButtonPress(PlayerIndex? controllingPlayer, out PlayerIndex playerIndex)
+        {
+            if (controllingPlayer.HasValue)
+            {
+                // Read input from the specified player.
+                playerIndex = controllingPlayer.Value;
+
+                int i = (int)playerIndex;
+
+                return CurrentMouseStates[i].LeftButton == ButtonState.Released &&
+                        _lastMouseStates[i].LeftButton == ButtonState.Pressed;
+            }
+
+            // Accept input from any player.
+            return IsNewLeftMouseButtonPress(PlayerIndex.One, out playerIndex) ||
+                    IsNewLeftMouseButtonPress(PlayerIndex.Two, out playerIndex) ||
+                    IsNewLeftMouseButtonPress(PlayerIndex.Three, out playerIndex) ||
+                    IsNewLeftMouseButtonPress(PlayerIndex.Four, out playerIndex);
         }
 
         /// <summary>

@@ -14,12 +14,14 @@ namespace UhhGame.Screens
         private readonly List<MenuEntry> _menuEntries = new List<MenuEntry>();
         private int _selectedEntry;
         private readonly string _menuTitle;
+        private bool _mouseColliding;
 
         private readonly MouseSprite _mouse;
         private readonly InputAction _menuUp;
         private readonly InputAction _menuDown;
         private readonly InputAction _menuSelect;
         private readonly InputAction _menuCancel;
+        private readonly InputAction _leftClick;
 
         // Gets the list of menu entries, so derived classes can add or change the menu contents.
         protected IList<MenuEntry> MenuEntries => _menuEntries;
@@ -40,10 +42,12 @@ namespace UhhGame.Screens
                 new[] { Keys.Down }, true);
             _menuSelect = new InputAction(
                 new[] { Buttons.A, Buttons.Start },
-                new[] { Keys.Enter, Keys.Space }, true);
+                new[] { Keys.Enter, Keys.Space}, true);
             _menuCancel = new InputAction(
                 new[] { Buttons.B, Buttons.Back },
                 new[] { Keys.Back, Keys.Escape }, true);
+            _leftClick = new InputAction(
+                true, true);
         }
 
         // Responds to user input, changing the selected entry and accepting or cancelling the menu.
@@ -73,10 +77,16 @@ namespace UhhGame.Screens
                     _selectedEntry = 0;
             }
 
-            if (_menuSelect.Occurred(input, ControllingPlayer, out playerIndex))
+            if (_menuSelect.Occurred(input, ControllingPlayer, out playerIndex) || 
+                (_mouseColliding && _leftClick.LeftClickOccurred(input, ControllingPlayer, out playerIndex)))
+            {
                 OnSelectEntry(_selectedEntry, playerIndex);
+            }
+
             else if (_menuCancel.Occurred(input, ControllingPlayer, out playerIndex))
+            {
                 OnCancel(playerIndex);
+            }
         }
 
         protected virtual void OnSelectEntry(int entryIndex, PlayerIndex playerIndex)
@@ -133,11 +143,13 @@ namespace UhhGame.Screens
             base.Update(gameTime, otherScreenHasFocus, coveredByOtherScreen);
 
             // Update each nested MenuEntry object.
+            _mouseColliding = false;
             for (int i = 0; i < _menuEntries.Count; i++)
             {
                 if (MenuEntries[i].Bounds.CollidesWith(_mouse.Bounds))
                 {
                     _selectedEntry = i;
+                    _mouseColliding = true;
                 }
                 bool isSelected = IsActive && i == _selectedEntry;
                 _menuEntries[i].Update(this, isSelected, gameTime);

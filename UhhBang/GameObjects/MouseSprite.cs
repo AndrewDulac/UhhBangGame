@@ -37,7 +37,7 @@ namespace UhhGame
         /// <param name="gameTime">The GameTime</param>
         public void Update(InputState input)
         {
-            center = input.MouseLocation;
+            center = input.CurrentMouseStates[0].Position;
         }
 
         /// <summary>
