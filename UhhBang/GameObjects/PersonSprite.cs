@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using UhhGame.Collisions;
+using UhhBang.Collisions;
 
-namespace UhhGame
+namespace UhhBang
 {
     /// <summary>
     /// A class representing a slime ghost

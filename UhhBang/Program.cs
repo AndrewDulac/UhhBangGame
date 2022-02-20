@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace UhhGame
+namespace UhhBang
 {
     public static class Program
     {

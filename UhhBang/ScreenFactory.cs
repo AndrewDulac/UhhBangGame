@@ -1,7 +1,7 @@
 ﻿using System;
-using UhhGame.StateManagement;
+using UhhBang.StateManagement;
 
-namespace UhhGame
+namespace UhhBang
 {
     // Our game's implementation of IScreenFactory which can handle creating the screens
     public class ScreenFactory : IScreenFactory

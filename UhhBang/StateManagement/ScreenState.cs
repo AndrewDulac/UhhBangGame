@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace UhhGame.StateManagement
+namespace UhhBang.StateManagement
 {
     /// <summary>
     /// Enumerations of the possible screen states

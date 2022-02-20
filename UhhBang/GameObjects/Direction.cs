@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 
-namespace UhhGame
+namespace UhhBang
 {
     public enum DirectionEnum
     {

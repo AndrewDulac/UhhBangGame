@@ -4,7 +4,7 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace UhhGame.StateManagement
+namespace UhhBang.StateManagement
 {
     /// <summary>
     /// Helper for reading input from keyboard, gamepad, and touch input. This class 

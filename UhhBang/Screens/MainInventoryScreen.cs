@@ -1,41 +1,29 @@
-﻿using UhhGame.StateManagement;
+﻿using UhhBang.StateManagement;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     // The pause menu comes up over the top of the game,
     // giving the player options to resume or quit.
     public class MainInventoryScreen : InventoryScreen
     {
-        
+        private const float ITEM_SIZE = 50f;
         private ContentManager _content;
-        private Dictionary<string, string> _assets = new Dictionary<string, string>()
-        {
-            {"crate", "Sprites/crate" },
-            {"crate1", "Sprites/crate" },
-            {"crate2", "Sprites/crate" },
-            {"crate3", "Sprites/crate" },
-            {"crate4", "Sprites/crate" },
-            {"crate5", "Sprites/crate" },
-            {"crate6", "Sprites/crate" },
-            {"crate7", "Sprites/crate" },
-        };
+        private List<Texture2D> _inventoryTextures;
 
-        public MainInventoryScreen() : base("Inventory")
+        //look into passing in textures?
+        public MainInventoryScreen(List<Texture2D> textures) : base("Inventory")
         {
-
-            
+            _inventoryTextures = textures;
         }
 
         public override void Activate()
         {
-            if (_content == null)
-                _content = new ContentManager(ScreenManager.Game.Services, "Content");
-            foreach (var item in _assets)
+            foreach(var texture in _inventoryTextures)
             {
-                var entry = new InventoryEntry(_content.Load<Texture2D>(item.Value), ITEM_SIZE);
+                var entry = new InventoryEntry(texture, ITEM_SIZE);
                 entry.Selected += QuitGameMenuEntrySelected;
                 InventoryEntries.Add(entry);
             }

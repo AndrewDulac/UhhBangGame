@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace UhhGame.StateManagement
+namespace UhhBang.StateManagement
 {
     /// <summary>
     /// The ScreenManager is a component which manages one or more GameScreen instance.

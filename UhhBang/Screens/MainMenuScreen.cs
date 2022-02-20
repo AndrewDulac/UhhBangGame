@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using UhhGame.StateManagement;
+using UhhBang.StateManagement;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     // The main menu screen is the first thing displayed when the game starts up.
     public class MainMenuScreen : MenuScreen

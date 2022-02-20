@@ -1,10 +1,10 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using UhhGame.StateManagement;
-using UhhGame.Collisions;
+using UhhBang.StateManagement;
+using UhhBang.Collisions;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     // Helper class represents a single entry in a MenuScreen. By default this
     // just draws the entry text string, but it can be customized to display menu

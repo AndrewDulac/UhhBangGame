@@ -4,9 +4,9 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
-using UhhGame.StateManagement;
+using UhhBang.StateManagement;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     public class SplashScreen : GameScreen
     {

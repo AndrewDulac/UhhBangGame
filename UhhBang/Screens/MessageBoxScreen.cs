@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using UhhGame.StateManagement;
+using UhhBang.StateManagement;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     // A popup message box screen, used to display "are you sure?" confirmation messages.
     public class MessageBoxScreen : GameScreen

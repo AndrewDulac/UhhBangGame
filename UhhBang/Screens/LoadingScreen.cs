@@ -1,8 +1,8 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
-using UhhGame.StateManagement;
+using UhhBang.StateManagement;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     // The loading screen coordinates transitions between the menu system and the
     // game itself. Normally one screen will transition off at the same time as

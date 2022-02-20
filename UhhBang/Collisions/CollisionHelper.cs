@@ -4,7 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 
 
-namespace UhhGame.Collisions
+namespace UhhBang.Collisions
 {
     public static class CollisionHelper
     {

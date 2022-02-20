@@ -4,9 +4,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using UhhGame.StateManagement;
+using UhhBang.StateManagement;
+using System.Collections.Generic;
+using UhhBang.GameObjects;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     // This screen implements the actual game logic. It is just a
     // placeholder to get the idea across: you'll probably want to
@@ -14,15 +16,14 @@ namespace UhhGame.Screens
     public class GameplayScreen : GameScreen
     {
         private ContentManager _content;
-        private SpriteFont _gameFont;
         private PersonSprite player;
+
+        private List<Texture2D> _inventoryTextures = new List<Texture2D>();
 
         private Vector2 _playerMovement;
         private DirectionEnum _playerDirection;
 
         private Vector2 _enemyPosition = new Vector2(100, 100);
-
-        private Texture2D _backgroundTexture;
 
         private readonly Random _random = new Random();
 
@@ -49,6 +50,10 @@ namespace UhhGame.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
 
+            foreach (var item in Textures.ExplosionEffectSprites)
+            {
+                _inventoryTextures.Add(_content.Load<Texture2D>(item));
+            }
             player = new PersonSprite(new Vector2(30, ScreenManager.GraphicsDevice.Viewport.Height - 50), 2f);
             var backgroundScreen = new BackgroundScreen();
             ScreenManager.AddScreen(backgroundScreen, null);
@@ -123,7 +128,7 @@ namespace UhhGame.Screens
             }
             if (_inventoryAction.Occurred(input, ControllingPlayer, out player))
             {
-                ScreenManager.AddScreen(new MainInventoryScreen(), ControllingPlayer);
+                ScreenManager.AddScreen(new MainInventoryScreen(_inventoryTextures), ControllingPlayer);
             }
             else
             {

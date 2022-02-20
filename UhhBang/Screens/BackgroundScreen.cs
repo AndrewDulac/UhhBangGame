@@ -2,9 +2,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using UhhGame.StateManagement;
+using UhhBang.StateManagement;
 
-namespace UhhGame.Screens
+namespace UhhBang.Screens
 {
     // The background screen sits behind all the other menu screens.
     // It draws a background image that remains fixed in place regardless

@@ -1,10 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using UhhGame.Screens;
-using UhhGame.StateManagement;
+using UhhBang.Screens;
+using UhhBang.StateManagement;
 
-namespace UhhGame
+namespace UhhBang
 {
     // Sample showing how to manage different game states, with transitions
     // between menu screens, a loading screen, the game itself, and a pause
