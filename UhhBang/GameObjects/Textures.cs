@@ -26,9 +26,6 @@ namespace UhhBang.GameObjects
             "Sprites/star",
             "Sprites/crate",
             "Sprites/star",
-            "Sprites/crate",
-            "Sprites/star",
-            "Sprites/crate",
         };
     }
 }

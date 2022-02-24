@@ -8,6 +8,7 @@ using UhhBang.StateManagement;
 using System.Collections.Generic;
 using UhhBang.GameObjects;
 
+
 namespace UhhBang.Screens
 {
     // This screen implements the actual game logic. It is just a
@@ -27,9 +28,12 @@ namespace UhhBang.Screens
 
         private readonly Random _random = new Random();
 
+        
+
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
         private readonly InputAction _inventoryAction;
+        private readonly InputAction _lightAction;
 
         public GameplayScreen()
         {
@@ -42,6 +46,9 @@ namespace UhhBang.Screens
             _inventoryAction = new InputAction(
                 new[] { Buttons.DPadUp },
                 new[] { Keys.Tab }, true);
+            _lightAction = new InputAction(
+                new[] { Buttons.A },
+                new[] { Keys.E }, true);
         }
 
         // Load graphics content for the game
@@ -122,9 +129,14 @@ namespace UhhBang.Screens
             bool gamePadDisconnected = !gamePadState.IsConnected && input.GamePadWasConnected[playerIndex];
 
             PlayerIndex player;
+
             if (_pauseAction.Occurred(input, ControllingPlayer, out player) || gamePadDisconnected)
             {
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
+            }
+            if (_lightAction.Occurred(input, ControllingPlayer, out player))
+            {
+                ScreenManager.FireworkParticleSystem.PlaceFireWork(new Vector2(100, 100));
             }
             if (_inventoryAction.Occurred(input, ControllingPlayer, out player))
             {

@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using UhhBang.GameObjects.Particles;
+
 
 namespace UhhBang.StateManagement
 {
@@ -34,6 +36,8 @@ namespace UhhBang.StateManagement
         /// A blank texture that can be used by the screens.
         /// </summary>
         public Texture2D BlankTexture { get; private set; }
+
+        public FireworkParticleSystem FireworkParticleSystem { get; private set; }
 
         /// <summary>
         /// A mousesprite object that can be used by any screen.
@@ -71,6 +75,12 @@ namespace UhhBang.StateManagement
             Fonts["menufont"] = _content.Load<SpriteFont>("Fonts/menufont");
             CursorTexture = _content.Load<Texture2D>("Sprites/pointer");
             BlankTexture = _content.Load<Texture2D>("blank");
+
+
+            FireworkParticleSystem = new FireworkParticleSystem(Game, 20);
+            Game.Components.Add(FireworkParticleSystem);
+
+
 
             // Tell each of the screens to load thier content 
             foreach (var screen in _screens)
