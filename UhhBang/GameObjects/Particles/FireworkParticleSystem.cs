@@ -54,7 +54,7 @@ namespace UhhBang.GameObjects.Particles
                 animationFrames[i] = new Rectangle(sourceRect.X + i * sourceRect.Width, sourceRect.Y, sourceRect.Width, sourceRect.Height);
             }
 
-            p.Initialize(where, velocity, acceleration, Color.White, sourceRect, animationFrames, lifetime: lifetime, rotation: rotation, angularVelocity: angularVelocity, scale: scale);
+            p.Initialize(where, velocity, acceleration, Color.Red, sourceRect, animationFrames, lifetime: lifetime, rotation: rotation, angularVelocity: angularVelocity, scale: scale);
         }
 
         protected override void UpdateParticle(ref Particle particle, float dt)

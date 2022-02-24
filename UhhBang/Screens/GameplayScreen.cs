@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Input;
 using UhhBang.StateManagement;
 using System.Collections.Generic;
 using UhhBang.GameObjects;
+using UhhBang.GameObjects.Particles;
 
 
 namespace UhhBang.Screens
@@ -21,14 +22,10 @@ namespace UhhBang.Screens
 
         private List<Texture2D> _inventoryTextures = new List<Texture2D>();
 
+        public FireworkParticleSystem FireworkParticleSystem { get; private set; }
+
         private Vector2 _playerMovement;
         private DirectionEnum _playerDirection;
-
-        private Vector2 _enemyPosition = new Vector2(100, 100);
-
-        private readonly Random _random = new Random();
-
-        
 
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
@@ -64,6 +61,12 @@ namespace UhhBang.Screens
             player = new PersonSprite(new Vector2(30, ScreenManager.GraphicsDevice.Viewport.Height - 50), 2f);
             var backgroundScreen = new BackgroundScreen();
             ScreenManager.AddScreen(backgroundScreen, null);
+
+            var Game = ScreenManager.Game;
+
+            FireworkParticleSystem = new FireworkParticleSystem(Game, 20);
+            ScreenManager.Game.Components.Add(FireworkParticleSystem);
+
             player.LoadContent(_content);
             // A real game would probably have more content than this sample, so
             // it would take longer to load. We simulate that by delaying for a
@@ -102,8 +105,6 @@ namespace UhhBang.Screens
 
             if (IsActive)
             {
-                // Apply some random jitter to make the enemy move around.
-                const float randomization = 10;
                 player.Update(_playerMovement, _playerDirection, 200);
                 // This game isn't very fun! You could probably improve
                 // it by inserting something more interesting in this space :-)
@@ -136,7 +137,7 @@ namespace UhhBang.Screens
             }
             if (_lightAction.Occurred(input, ControllingPlayer, out player))
             {
-                ScreenManager.FireworkParticleSystem.PlaceFireWork(new Vector2(100, 100));
+                FireworkParticleSystem.PlaceFireWork(new Vector2(100, 100));
             }
             if (_inventoryAction.Occurred(input, ControllingPlayer, out player))
             {

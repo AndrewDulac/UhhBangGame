@@ -37,8 +37,6 @@ namespace UhhBang.StateManagement
         /// </summary>
         public Texture2D BlankTexture { get; private set; }
 
-        public FireworkParticleSystem FireworkParticleSystem { get; private set; }
-
         /// <summary>
         /// A mousesprite object that can be used by any screen.
         /// </summary>
@@ -75,10 +73,6 @@ namespace UhhBang.StateManagement
             Fonts["menufont"] = _content.Load<SpriteFont>("Fonts/menufont");
             CursorTexture = _content.Load<Texture2D>("Sprites/pointer");
             BlankTexture = _content.Load<Texture2D>("blank");
-
-
-            FireworkParticleSystem = new FireworkParticleSystem(Game, 20);
-            Game.Components.Add(FireworkParticleSystem);
 
 
 

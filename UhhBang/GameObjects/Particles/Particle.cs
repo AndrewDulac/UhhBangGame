@@ -89,7 +89,7 @@ namespace UhhBang.GameObjects.Particles
         /// <summary>
         /// Sets the particle up for first use, restoring defaults
         /// </summary>
-        public void Initialize(Vector2 where, float lifetime = 1, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
+        public void Initialize(Vector2 where, float lifetime = 0, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
         {
             this.Position = where;
             this.Velocity = Vector2.Zero;
@@ -108,7 +108,7 @@ namespace UhhBang.GameObjects.Particles
         /// <summary>
         /// Sets the particle up for first use 
         /// </summary>
-        public void Initialize(Vector2 position, Vector2 velocity, float lifetime = 1, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
+        public void Initialize(Vector2 position, Vector2 velocity, float lifetime = 0, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
         {
             this.Position = position;
             this.Velocity = velocity;
@@ -127,7 +127,7 @@ namespace UhhBang.GameObjects.Particles
         /// <summary>
         /// Sets the particle up for first use 
         /// </summary>
-        public void Initialize(Vector2 position, Vector2 velocity, Vector2 acceleration, float lifetime = 1, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
+        public void Initialize(Vector2 position, Vector2 velocity, Vector2 acceleration, float lifetime = 0, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
         {
             this.Position = position;
             this.Velocity = velocity;
@@ -146,7 +146,7 @@ namespace UhhBang.GameObjects.Particles
         /// <summary>
         /// Sets the particle up for first use 
         /// </summary>
-        public void Initialize(Vector2 position, Vector2 velocity, Vector2 acceleration, Color color, float lifetime = 1, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
+        public void Initialize(Vector2 position, Vector2 velocity, Vector2 acceleration, Color color, float lifetime = 0, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
         {
             this.Position = position;
             this.Velocity = velocity;
@@ -165,7 +165,7 @@ namespace UhhBang.GameObjects.Particles
         /// <summary>
         /// Sets the particle up for first use 
         /// </summary>
-        public void Initialize(Vector2 position, Vector2 velocity, Vector2 acceleration, Color color, Rectangle sourceRectangle, Rectangle[] animationFrames,  float lifetime = 1, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
+        public void Initialize(Vector2 position, Vector2 velocity, Vector2 acceleration, Color color, Rectangle sourceRectangle, Rectangle[] animationFrames,  float lifetime = 0, float scale = 1, float rotation = 0, float angularVelocity = 0, float angularAcceleration = 0)
         {
             this.Position = position;
             this.Velocity = velocity;

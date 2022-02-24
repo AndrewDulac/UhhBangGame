@@ -149,6 +149,7 @@ namespace UhhBang.GameObjects.Particles
         {
             // Update particle's linear motion values
             particle.Velocity += particle.Acceleration * dt;
+            particle.Velocity += new Vector2(0, 1);
             particle.Position += particle.Velocity * dt;
 
             // Update the particle's angular motion values
