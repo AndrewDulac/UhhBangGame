@@ -40,16 +40,16 @@ namespace UhhBang.Screens
             _mouse = new MouseSprite();
             _inventoryUp = new InputAction(
                 new[] { Buttons.DPadUp, Buttons.LeftThumbstickUp },
-                new[] { Keys.Up }, true);
+                new[] { Keys.Up, Keys.W }, true);
             _inventoryDown = new InputAction(
                 new[] { Buttons.DPadDown, Buttons.LeftThumbstickDown },
-                new[] { Keys.Down }, true);
+                new[] { Keys.Down, Keys.D }, true);
             _inventoryLeft = new InputAction(
                 new[] { Buttons.DPadLeft, Buttons.LeftThumbstickLeft },
-                new[] { Keys.Left }, true);
+                new[] { Keys.Left, Keys.A }, true);
             _inventoryRight = new InputAction(
                 new[] { Buttons.DPadRight, Buttons.LeftThumbstickRight },
-                new[] { Keys.Right }, true);
+                new[] { Keys.Right, Keys.D }, true);
             _inventorySelect = new InputAction(
                 new[] { Buttons.A, Buttons.Start },
                 new[] { Keys.Enter, Keys.Space}, true);
@@ -201,7 +201,7 @@ namespace UhhBang.Screens
 
             var graphics = ScreenManager.GraphicsDevice;
             var spriteBatch = ScreenManager.SpriteBatch;
-            var font = ScreenManager.Fonts["gamefont"];
+            var font = ScreenManager.Fonts["Britannic_Bold_Title"];
 
             spriteBatch.Begin();
             
@@ -220,7 +220,7 @@ namespace UhhBang.Screens
             // Draw the inventory title centered on the screen
             var titlePosition = new Vector2(graphics.Viewport.Width / 2, 80);
             var titleOrigin = font.MeasureString(_inventoryTitle) / 2;
-            var titleColor = new Color(192, 192, 192) * TransitionAlpha;
+            var titleColor = Color.LightSlateGray * TransitionAlpha;
             const float titleScale = 1.25f;
 
             titlePosition.Y -= transitionOffset * 100;

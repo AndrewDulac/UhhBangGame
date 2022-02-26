@@ -2,8 +2,8 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using UhhBang.GameObjects.Particles;
-
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace UhhBang.StateManagement
 {
@@ -51,6 +51,7 @@ namespace UhhBang.StateManagement
             _content = new ContentManager(game.Services, "Content");
         }
 
+        private Song backgroundMusic;
         /// <summary>
         /// Initializes the ScreenManager
         /// </summary>
@@ -74,7 +75,9 @@ namespace UhhBang.StateManagement
             CursorTexture = _content.Load<Texture2D>("Sprites/pointer");
             BlankTexture = _content.Load<Texture2D>("blank");
 
-
+            backgroundMusic = _content.Load<Song>("Sounds/Visager - Bug Band [Loop]");
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Play(backgroundMusic);
 
             // Tell each of the screens to load thier content 
             foreach (var screen in _screens)

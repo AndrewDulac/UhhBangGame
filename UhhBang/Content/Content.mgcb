@@ -84,6 +84,24 @@
 /processorParam:TextureFormat=Color
 /build:Player/StrafeSheet.png
 
+#begin Sounds/bassplosion.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/bassplosion.wav
+
+#begin Sounds/cannon_fire.ogg
+/importer:OggImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/cannon_fire.ogg
+
+#begin Sounds/Visager - Bug Band [Loop].mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:Sounds/Visager - Bug Band [Loop].mp3
+
 #begin Sprites/blank.png
 /importer:TextureImporter
 /processor:TextureProcessor

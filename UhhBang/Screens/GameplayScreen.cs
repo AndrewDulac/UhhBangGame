@@ -8,7 +8,7 @@ using UhhBang.StateManagement;
 using System.Collections.Generic;
 using UhhBang.GameObjects;
 using UhhBang.GameObjects.Particles;
-
+using Microsoft.Xna.Framework.Audio;
 
 namespace UhhBang.Screens
 {
@@ -29,6 +29,7 @@ namespace UhhBang.Screens
 
         private Vector2 _playerMovement;
         private DirectionEnum _playerDirection;
+        private SoundEffect _explosion;
 
         private float _pauseAlpha;
         private readonly InputAction _pauseAction;
@@ -57,6 +58,8 @@ namespace UhhBang.Screens
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
             Texture2D explosionAtlas = _content.Load<Texture2D>("Sprites/M484ExplosionSet2");
+
+            _explosion = _content.Load<SoundEffect>("Sounds/cannon_fire");
 
             var sourceRect = new Rectangle(373, 296, 34, 34);
             _inventoryTextures.Add((Color.Yellow, explosionAtlas, sourceRect));
@@ -218,6 +221,7 @@ namespace UhhBang.Screens
                 {
                     _lastIndex = i;
                     Vector2 randomPos = RandomHelper.RandomPosition(new Rectangle(300, 100, 50, 50));
+                    _explosion.Play();
                     FireworkParticleSystem.PlaceFireWork(randomPos, this.player.Inventory[i]);
                     if (i == this.player.Inventory.Count - 1)
                     {
@@ -235,8 +239,13 @@ namespace UhhBang.Screens
 
             // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;
+            var font = ScreenManager.Fonts["Britannic_Bold_12"];
+            string text = "[WASD] for Movement \n[Tab] or (start) to open Inventory to add effects\nPress [E] to start effects";
+            Vector2 textSize = font.MeasureString(text);
+            Vector2 textLoc = new Vector2((this.ScreenManager.GraphicsDevice.Viewport.Width / 2 - textSize.X / 2), 20);
 
             spriteBatch.Begin();
+            spriteBatch.DrawString(font, text, textLoc, Color.LightSlateGray);
             player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 
