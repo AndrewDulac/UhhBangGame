@@ -17,7 +17,8 @@ namespace UhhBang.Screens
         private float _scale;
         private float _selectionFade;    // Entries transition out of the selection effect when they are deselected
         private Vector2 _position;    // This is set by the MenuScreen each frame in Update
-
+        public Color Color;
+        private Rectangle _source;
         /// <summary>
         /// bounding volume of the sprite
         /// </summary>
@@ -46,10 +47,12 @@ namespace UhhBang.Screens
             Selected?.Invoke(this, new PlayerIndexEventArgs(playerIndex));
         }
 
-        public InventoryEntry(Texture2D texture, float size)
+        public InventoryEntry(Color color, Texture2D texture, float size, Rectangle source)
         {
+            Color = color;
             _texture = texture;
-            _scale = size / _texture.Width;
+            _source = source;
+            _scale = size / _source.Width;
         }
 
         public virtual void Update(InventoryScreen screen, bool isSelected, GameTime gameTime)
@@ -69,22 +72,24 @@ namespace UhhBang.Screens
         // This can be overridden to customize the appearance.
         public virtual void Draw(InventoryScreen screen, bool isSelected, GameTime gameTime)
         {
-            var color = isSelected ? Color.Yellow : Color.White;
+            byte selectAlpha = isSelected ? (byte)50 : (byte)100;
             var scale = isSelected ? 1.1f * _scale : _scale;
+            var color = Color;
+            color.A = selectAlpha;
 
             // Modify the alpha to fade text out during transitions.
-            color *= screen.TransitionAlpha;
+            color = color * screen.TransitionAlpha;
 
             // Draw text, centered on the middle of each line.
             var screenManager = screen.ScreenManager;
             var spriteBatch = screenManager.SpriteBatch;
 
-            var origin = new Vector2(_texture.Width / 2, _texture.Height / 2);
-            bounds = new BoundingRectangle(_position - new Vector2(GetWidth()/2,GetHeight()/2), GetWidth(), GetHeight());
+            var origin = new Vector2(GetWidth() / 2, GetHeight() / 2);
+            bounds = new BoundingRectangle(_position - origin, GetWidth(), GetHeight());
             spriteBatch.Draw(
                 _texture,
                 _position,
-                null,
+                _source,
                 color, 
                 0,
                 origin,
@@ -96,12 +101,12 @@ namespace UhhBang.Screens
 
         public virtual int GetHeight()
         {
-            return (int)(_texture.Height * _scale);
+            return (int)(_source.Height * _scale);
         }
 
         public virtual int GetWidth()
         {
-            return (int)(_texture.Width * _scale);
+            return (int)(_source.Width * _scale);
         }
     }
 }

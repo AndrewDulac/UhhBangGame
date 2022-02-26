@@ -33,6 +33,8 @@ namespace UhhBang
         private double animationTimer;
 
         private short animationFrame = 1;
+
+        public List<Color> Inventory = new List<Color>();
         /// <summary>
         /// direction of the bat
         /// </summary>

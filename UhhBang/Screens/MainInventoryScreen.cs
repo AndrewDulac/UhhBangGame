@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 
 namespace UhhBang.Screens
 {
@@ -11,32 +12,30 @@ namespace UhhBang.Screens
     {
         private const float ITEM_SIZE = 50f;
         private ContentManager _content;
-        private List<Texture2D> _inventoryTextures;
+        private List<(Color, Texture2D, Rectangle)> _inventoryTextures;
+        private List<Color> _playerInventory;
 
         //look into passing in textures?
-        public MainInventoryScreen(List<Texture2D> textures) : base("Inventory")
+        public MainInventoryScreen(List<(Color, Texture2D, Rectangle)> textures, List<Color> playerInventory) : base("Inventory")
         {
             _inventoryTextures = textures;
+            _playerInventory = playerInventory;
         }
 
         public override void Activate()
         {
             foreach(var texture in _inventoryTextures)
             {
-                var entry = new InventoryEntry(texture, ITEM_SIZE);
-                entry.Selected += QuitGameMenuEntrySelected;
+                var entry = new InventoryEntry(texture.Item1, texture.Item2, ITEM_SIZE, texture.Item3);
+                entry.Selected += AddItemToInventory;
                 InventoryEntries.Add(entry);
             }
         }
 
-        private void QuitGameMenuEntrySelected(object sender, PlayerIndexEventArgs e)
+        private void AddItemToInventory(object sender, PlayerIndexEventArgs e)
         {
-            const string message = "Are you sure you want to quit this game?";
-            var confirmQuitMessageBox = new MessageBoxScreen(message);
-
-            confirmQuitMessageBox.Accepted += ConfirmQuitMessageBoxAccepted;
-
-            ScreenManager.AddScreen(confirmQuitMessageBox, ControllingPlayer);
+            _playerInventory.Add(((InventoryEntry)sender).Color);
+            
         }
 
         // This uses the loading screen to transition from the game back to the main menu screen.

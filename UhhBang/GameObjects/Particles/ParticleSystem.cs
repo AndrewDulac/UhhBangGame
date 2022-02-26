@@ -134,7 +134,7 @@ namespace UhhBang.GameObjects.Particles
         /// <param name="p">the particle to initialize</param>
         /// <param name="where">the position on the screen that the particle should be
         /// </param>
-        protected virtual void InitializeParticle(ref Particle p, Vector2 where)
+        protected virtual void InitializeParticle(ref Particle p, Vector2 where, Color color)
         {
             // Initialize the particle with default values
             p.Initialize(where);
@@ -264,7 +264,7 @@ namespace UhhBang.GameObjects.Particles
         /// AddParticles will have no effect.
         /// </summary>
         /// <param name="where">where the particle effect should be created</param>
-        protected void AddParticles(Vector2 where)
+        protected void AddParticles(Vector2 where, Color color)
         {
             // the number of particles we want for this effect is a random number
             // somewhere between the two constants specified by the subclasses.
@@ -276,7 +276,7 @@ namespace UhhBang.GameObjects.Particles
             {
                 // grab a particle from the freeParticles queue, and Initialize it.
                 int index = freeParticles.Dequeue();
-                InitializeParticle(ref particles[index], where);
+                InitializeParticle(ref particles[index], where, color);
             }
         }
 
@@ -287,7 +287,7 @@ namespace UhhBang.GameObjects.Particles
         /// AddParticles will have no effect.
         /// </summary>
         /// <param name="where">where the particle effect should be created</param>
-        protected void AddParticles(Rectangle where)
+        protected void AddParticles(Rectangle where, Color color)
         {
             // the number of particles we want for this effect is a random number
             // somewhere between the two constants specified by the subclasses.
@@ -299,7 +299,7 @@ namespace UhhBang.GameObjects.Particles
             {
                 // grab a particle from the freeParticles queue, and Initialize it.
                 int index = freeParticles.Dequeue();
-                InitializeParticle(ref particles[index], RandomHelper.RandomPosition(where));
+                InitializeParticle(ref particles[index], RandomHelper.RandomPosition(where), color);
             }
         }
 

@@ -17,10 +17,13 @@ namespace UhhBang.Screens
     // put some more interesting gameplay in here!
     public class GameplayScreen : GameScreen
     {
+        private const float TIME_SPLIT = 0.5f;
         private ContentManager _content;
         private PersonSprite player;
-
-        private List<Texture2D> _inventoryTextures = new List<Texture2D>();
+        private float _timeSinceLit;
+        private bool _lit;
+        private List<(Color, Texture2D, Rectangle)> _inventoryTextures = new List<(Color, Texture2D, Rectangle)>();
+        private int _lastIndex;
 
         public FireworkParticleSystem FireworkParticleSystem { get; private set; }
 
@@ -53,18 +56,23 @@ namespace UhhBang.Screens
         {
             if (_content == null)
                 _content = new ContentManager(ScreenManager.Game.Services, "Content");
+            Texture2D explosionAtlas = _content.Load<Texture2D>("Sprites/M484ExplosionSet2");
 
-            foreach (var item in Textures.ExplosionEffectSprites)
-            {
-                _inventoryTextures.Add(_content.Load<Texture2D>(item));
-            }
+            var sourceRect = new Rectangle(373, 296, 34, 34);
+            _inventoryTextures.Add((Color.Yellow, explosionAtlas, sourceRect));
+            _inventoryTextures.Add((Color.Green, explosionAtlas, sourceRect));
+            _inventoryTextures.Add((Color.Blue, explosionAtlas, sourceRect));
+            _inventoryTextures.Add((Color.Red, explosionAtlas, sourceRect));
+            _inventoryTextures.Add((Color.Purple, explosionAtlas, sourceRect));
+            _inventoryTextures.Add((Color.Cyan, explosionAtlas, sourceRect));
+
             player = new PersonSprite(new Vector2(30, ScreenManager.GraphicsDevice.Viewport.Height - 50), 2f);
             var backgroundScreen = new BackgroundScreen();
             ScreenManager.AddScreen(backgroundScreen, null);
 
             var Game = ScreenManager.Game;
 
-            FireworkParticleSystem = new FireworkParticleSystem(Game, 20);
+            FireworkParticleSystem = new FireworkParticleSystem(Game, 44);
             ScreenManager.Game.Components.Add(FireworkParticleSystem);
 
             player.LoadContent(_content);
@@ -135,13 +143,13 @@ namespace UhhBang.Screens
             {
                 ScreenManager.AddScreen(new PauseMenuScreen(), ControllingPlayer);
             }
-            if (_lightAction.Occurred(input, ControllingPlayer, out player))
+            if (_lightAction.Occurred(input, ControllingPlayer, out player) && this.player.Inventory.Count > 0)
             {
-                FireworkParticleSystem.PlaceFireWork(new Vector2(100, 100));
+                _lit = true;
             }
             if (_inventoryAction.Occurred(input, ControllingPlayer, out player))
             {
-                ScreenManager.AddScreen(new MainInventoryScreen(_inventoryTextures), ControllingPlayer);
+                ScreenManager.AddScreen(new MainInventoryScreen(_inventoryTextures, this.player.Inventory), ControllingPlayer);
             }
             else
             {
@@ -201,6 +209,22 @@ namespace UhhBang.Screens
                 }
 
 
+            }
+            if (_lit)
+            {
+                _timeSinceLit += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                int i = (int)(this.player.Inventory.Count * _timeSinceLit * TIME_SPLIT);
+                if (_lastIndex != i)
+                {
+                    _lastIndex = i;
+                    Vector2 randomPos = RandomHelper.RandomPosition(new Rectangle(300, 100, 50, 50));
+                    FireworkParticleSystem.PlaceFireWork(randomPos, this.player.Inventory[i]);
+                    if (i == this.player.Inventory.Count - 1)
+                    {
+                        _lit = false;
+                        _timeSinceLit = 0;
+                    }
+                }
             }
         }
 

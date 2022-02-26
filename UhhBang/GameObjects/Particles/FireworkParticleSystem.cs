@@ -23,20 +23,20 @@ namespace UhhBang.GameObjects.Particles
         }
         protected override void InitializeConstants()
         {
-            textureFilename = "Sprites/M484ExplosionSet1";
+            textureFilename = "Sprites/M484ExplosionSet2";
 
-            minNumParticles = 36;
-            maxNumParticles = 36;
+            minNumParticles = 22;
+            maxNumParticles = 22;
 
             blendState = BlendState.AlphaBlend;
             DrawOrder = AdditiveBlendDrawOrder;
 
         }
-        protected override void InitializeParticle(ref Particle p, Vector2 where)
+        protected override void InitializeParticle(ref Particle p, Vector2 where, Color color)
         {
-            var velocity = NextDirection() * 100;
+            var velocity = NextDirection() * 150;
 
-            var lifetime = 1.0f;
+            var lifetime = 1f;
 
             var acceleration = -velocity / lifetime;
 
@@ -46,7 +46,10 @@ namespace UhhBang.GameObjects.Particles
 
             var scale = .25f;
 
-            var sourceRect = new Rectangle(373, 8, 34, 34);
+            var alpha = 50;
+            color.A = 50;
+
+            var sourceRect = new Rectangle(373, 296, 34, 34);
 
             var animationFrames = new Rectangle[7];
             for(int i = 0; i < animationFrames.Length; i++)
@@ -54,7 +57,7 @@ namespace UhhBang.GameObjects.Particles
                 animationFrames[i] = new Rectangle(sourceRect.X + i * sourceRect.Width, sourceRect.Y, sourceRect.Width, sourceRect.Height);
             }
 
-            p.Initialize(where, velocity, acceleration, Color.Red, sourceRect, animationFrames, lifetime: lifetime, rotation: rotation, angularVelocity: angularVelocity, scale: scale);
+            p.Initialize(where, velocity, acceleration, color, sourceRect, animationFrames, lifetime: lifetime, rotation: rotation, angularVelocity: angularVelocity, scale: scale);
         }
 
         protected override void UpdateParticle(ref Particle particle, float dt)
@@ -63,24 +66,25 @@ namespace UhhBang.GameObjects.Particles
 
             float normalizedLifetime = particle.TimeSinceStart / particle.Lifetime;
 
-            particle.Scale = .25f - .01f * normalizedLifetime;
+            particle.Scale = .05f + .25f * normalizedLifetime;
 
             if (particle.AnimationSequence != null)
             {
-                particle.SourceIndex = (int)(normalizedLifetime * particle.AnimationSequence.Length);
+                //particle.SourceIndex = (int)(normalizedLifetime * particle.AnimationSequence.Length);
+                particle.SourceIndex = (int)(Math.Pow(normalizedLifetime, 2) * (particle.AnimationSequence.Length - 1));
                 //particle.SourceIndex = (int)Math.Pow(particle.AnimationSequence.Length + 1, normalizedLifetime) - 1;
             }
         }
 
-        public void PlaceFireWork(Vector2 where)
+        public void PlaceFireWork(Vector2 where, Color color)
         {
-            AddParticles(where);
+            AddParticles(where, color);
         }
 
         public Vector2 NextDirection()
         {
             if(_angle > 360) { _angle = 0; }
-            else { ++_angle; }
+            else { _angle += 2; }
             return new Vector2(MathF.Cos(_angle), MathF.Sin(_angle));
         }
     }
