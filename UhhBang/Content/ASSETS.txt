@@ -1,0 +1,20 @@
+﻿Content/Player/IdleSheet.png - created by 14Hertz on OpenGameArt.org (https://opengameart.org/content/8-directional-character-template) and released under OGA-BY-SA 3.0
+
+Content/Player/RunSheet.png - created by 14Hertz on OpenGameArt.org (https://opengameart.org/content/8-directional-character-template) and released under OGA-BY-SA 3.0
+
+Content/Player/StrafeSheet.png - created by 14Hertz on OpenGameArt.org (https://opengameart.org/content/8-directional-character-template) and released under OGA-BY-SA 3.0
+
+Content/Sprites/nightsky.png - created by fridaruiz on OpenGameArt.org (https://opengameart.org/content/pixel-night-city) and released under OGA-BY-SA 3.0
+
+Content/Sprites/star.png - created by Ecrivain on OpenGameArt.org (https://opengameart.org/content/star) and released to the public domain
+
+Content/Sprites/pointer.png - created by Andrew Dulac
+
+Content/Sprites/M484ExplosionSet1.png and 2 - created by Master484 on OpenGameArt.org (https://opengameart.org/content/explosion-set-1-m484-games) and released to the public domain
+
+Content/Sounds/cannon_fire.ogg - created by Thimras on OpenGameArt.org (https://opengameart.org/content/cannon-fire) and released to the public domain
+
+Content/Sounds/Visager - Bug Band [Loop].mp3 - created by Visager on freemusicarchive.org (https://freemusicarchive.org/music/Visager/Songs_from_an_Unmade_Forest_World/Bug_Band_Loop) and released under CC BY-SA 4.0
+
+Content/Sounds/bassplosion.wav - created by Andrew Dulac with BFXR
+
