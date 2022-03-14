@@ -25,6 +25,9 @@ namespace UhhBang.Screens
         private List<(Color, Texture2D, Rectangle)> _inventoryTextures = new List<(Color, Texture2D, Rectangle)>();
         private int _lastIndex;
 
+        private bool _shaking;
+        private float _shakeTime;
+
         public FireworkParticleSystem FireworkParticleSystem { get; private set; }
 
         private Vector2 _playerMovement;
@@ -223,6 +226,10 @@ namespace UhhBang.Screens
                     Vector2 randomPos = RandomHelper.RandomPosition(new Rectangle(300, 100, 50, 50));
                     _explosion.Play();
                     FireworkParticleSystem.PlaceFireWork(randomPos, this.player.Inventory[i]);
+
+                    _shakeTime = 0;
+                    _shaking = true;
+
                     if (i == this.player.Inventory.Count - 1)
                     {
                         _lit = false;
@@ -244,7 +251,17 @@ namespace UhhBang.Screens
             Vector2 textSize = font.MeasureString(text);
             Vector2 textLoc = new Vector2((this.ScreenManager.GraphicsDevice.Viewport.Width / 2 - textSize.X / 2), 20);
 
-            spriteBatch.Begin();
+            Matrix shakeTransform = Matrix.Identity;
+            if (_shaking)
+            {
+                _shakeTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
+                // Matrix shakeRotation = Matrix.CreateRotationZ(MathF.Cos(_shakeTime));
+                Matrix shakeTranslation = Matrix.CreateTranslation(10 * MathF.Sin(_shakeTime), 10 * MathF.Cos(_shakeTime), 0);
+                shakeTransform = shakeTranslation;
+                if (_shakeTime > 3000) _shaking = false;
+            }
+
+            spriteBatch.Begin(transformMatrix: shakeTransform);
             spriteBatch.DrawString(font, text, textLoc, Color.LightSlateGray);
             player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
