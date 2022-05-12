@@ -9,24 +9,52 @@ using System.Collections.Generic;
 using UhhBang.GameObjects;
 using UhhBang.GameObjects.Particles;
 using Microsoft.Xna.Framework.Audio;
+using System.Linq;
 
 namespace UhhBang.Screens
 {
+    public enum GameState { Tutorial, Start, Playing, End };
+    public enum TutorialState { Movement, Inventory, Ignite, ClearInventory, Finished };
+    public enum IgniteState { Wait, Light, Rise, Explode, Finished};
+    public enum TurnState { Auto, PlayerTurn };
     // This screen implements the actual game logic. It is just a
     // placeholder to get the idea across: you'll probably want to
     // put some more interesting gameplay in here!
     public class GameplayScreen : GameScreen
     {
+
+        GameState _gameState = GameState.Tutorial;
+        TutorialState _tutorialState = TutorialState.Movement;
+        IgniteState _igniteState = IgniteState.Wait;
+        TurnState _turn = TurnState.Auto;
+
         private const float TIME_SPLIT = 0.5f;
+
+        private string _dispText = "";
+
+        private int _currentLevel = 1;
+        private int _maxLevel = 30;
+
+        private List<Color> generatedSequence;
+
         private ContentManager _content;
         private PersonSprite player;
         private float _timeSinceLit;
         private bool _lit;
+        private bool _continue;
         private List<(Color, Texture2D, Rectangle)> _inventoryTextures = new List<(Color, Texture2D, Rectangle)>();
-        private int _lastIndex;
+        private int _lastIndex = -1;
+        static Random random = new Random();
 
-        private bool _shaking;
-        private float _shakeTime;
+        private List<Color> colors = new List<Color>()
+        {
+            Color.Yellow,
+            Color.Green,
+            Color.Blue,
+            Color.Red,
+            Color.Purple,
+            Color.Cyan
+        };
 
         public FireworkParticleSystem FireworkParticleSystem { get; private set; }
 
@@ -38,6 +66,7 @@ namespace UhhBang.Screens
         private readonly InputAction _pauseAction;
         private readonly InputAction _inventoryAction;
         private readonly InputAction _lightAction;
+        private readonly InputAction _continueAction;
 
         public GameplayScreen()
         {
@@ -53,6 +82,9 @@ namespace UhhBang.Screens
             _lightAction = new InputAction(
                 new[] { Buttons.A },
                 new[] { Keys.E }, true);
+            _continueAction = new InputAction(
+                new[] { Buttons.Y },
+                new[] { Keys.Space }, true);
         }
 
         // Load graphics content for the game
@@ -65,12 +97,11 @@ namespace UhhBang.Screens
             _explosion = _content.Load<SoundEffect>("Sounds/cannon_fire");
 
             var sourceRect = new Rectangle(373, 296, 34, 34);
-            _inventoryTextures.Add((Color.Yellow, explosionAtlas, sourceRect));
-            _inventoryTextures.Add((Color.Green, explosionAtlas, sourceRect));
-            _inventoryTextures.Add((Color.Blue, explosionAtlas, sourceRect));
-            _inventoryTextures.Add((Color.Red, explosionAtlas, sourceRect));
-            _inventoryTextures.Add((Color.Purple, explosionAtlas, sourceRect));
-            _inventoryTextures.Add((Color.Cyan, explosionAtlas, sourceRect));
+            foreach(Color c in colors)
+            {
+                _inventoryTextures.Add((c, explosionAtlas, sourceRect));
+            }
+            _inventoryTextures.Add((Color.Black, explosionAtlas, sourceRect));
 
             player = new PersonSprite(new Vector2(30, ScreenManager.GraphicsDevice.Viewport.Height - 50), 2f);
             var backgroundScreen = new BackgroundScreen();
@@ -78,6 +109,7 @@ namespace UhhBang.Screens
 
             var Game = ScreenManager.Game;
 
+            generatedSequence = new List<Color>();
             FireworkParticleSystem = new FireworkParticleSystem(Game, 44);
             ScreenManager.Game.Components.Add(FireworkParticleSystem);
 
@@ -120,8 +152,138 @@ namespace UhhBang.Screens
             if (IsActive)
             {
                 player.Update(_playerMovement, _playerDirection, 200);
-                // This game isn't very fun! You could probably improve
-                // it by inserting something more interesting in this space :-)
+                switch (_gameState)
+                {
+                    case GameState.Tutorial:
+                        switch (_tutorialState)
+                        {
+                            case TutorialState.Movement:
+                                _dispText = "Use [WD] to move Left and Right";
+                                if(Math.Abs(_playerMovement.X) > 0)
+                                {
+                                    _tutorialState = TutorialState.Inventory;
+                                } 
+                                break;
+                            case TutorialState.Inventory:
+                                _dispText = "Press [Tab] or (start) to open Inventory to add effects";
+                                if(this.player.Inventory.Count > 0)
+                                {
+                                    _tutorialState = TutorialState.Ignite;
+                                }
+                                break;
+                            case TutorialState.Ignite:
+                                _dispText = "Press [E] to start effects";
+                                if (_lit)
+                                {
+                                    _tutorialState = TutorialState.ClearInventory;
+                                }
+                                break;
+                            case TutorialState.ClearInventory:
+                                _dispText = "In your Inventory, press the black effect to clear your inventory";
+                                if(this.player.Inventory.Count == 0)
+                                {
+                                    _gameState = GameState.Start;
+                                }
+                                break;
+                        }
+                        break;
+                    case GameState.Start:
+                        _dispText = "Match the effect patterns to advance levels! (Press Space to start)";
+                        if (_continue)
+                        {
+                            _gameState = GameState.Playing;
+                            _continue = false;
+                        }
+                        break;
+                    case GameState.Playing:
+                        switch (_turn)
+                        {
+                            case TurnState.Auto:
+                                _dispText = "Level " + _currentLevel.ToString();
+                                if (_lit) _lit = false;
+                                _timeSinceLit += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                                int i = (int)(_currentLevel * _timeSinceLit * TIME_SPLIT);
+                                if (_lastIndex != i)
+                                {
+                                    _lastIndex = i;
+                                    generatedSequence.Add(colors[random.Next(colors.Count)]);
+                                    Vector2 randomPos = RandomHelper.RandomPosition(new Rectangle(500, 100, 50, 50));
+                                    _explosion.Play();
+                                    FireworkParticleSystem.PlaceFireWork(randomPos, generatedSequence[i]);
+
+                                    if (i == _currentLevel + 1)
+                                    {
+                                        _timeSinceLit = 0;
+                                        _turn = TurnState.PlayerTurn;
+                                    }
+                                }
+                                break;
+                            case TurnState.PlayerTurn:
+                                _dispText = "Level " + _currentLevel.ToString() + "\n Copy the pattern!";
+                                if (_igniteState == IgniteState.Finished)
+                                {
+                                    if(Enumerable.SequenceEqual(this.player.Inventory, generatedSequence))
+                                    {
+                                        _currentLevel++;
+                                    }
+                                    else
+                                    {
+                                        _gameState = GameState.End;
+                                    }
+                                    _turn = TurnState.Auto;
+                                    player.Inventory.Clear();
+                                    generatedSequence.Clear();
+                                }
+                                break;
+
+                            default:
+                                break;
+                        }
+                        break;
+                    case GameState.End:
+                        _dispText = "Better luck next time!";
+
+                        break;
+                }
+
+                if (_lit)
+                {
+                    _igniteState = IgniteState.Light;
+                    _lit = false;
+                }
+                switch (_igniteState)
+                {
+                    case IgniteState.Wait:
+                        break;
+                    case IgniteState.Light:
+                        _igniteState = IgniteState.Rise;
+                        break;
+                    case IgniteState.Rise:
+                        _igniteState = IgniteState.Explode;
+                        break;
+                    case IgniteState.Explode:
+                        _timeSinceLit += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                        int i = (int)(this.player.Inventory.Count * _timeSinceLit * TIME_SPLIT);
+                        if (_lastIndex != i)
+                        {
+                            _lastIndex = i;
+                            Vector2 randomPos = RandomHelper.RandomPosition(new Rectangle(100, 100, 50, 50));
+                            _explosion.Play();
+                            FireworkParticleSystem.PlaceFireWork(randomPos, this.player.Inventory[i]);
+
+                            if (i == this.player.Inventory.Count - 1)
+                            {
+                                _timeSinceLit = 0;
+                                _igniteState = IgniteState.Finished;
+                            }
+                        }
+                        break;
+                    case IgniteState.Finished:
+                        _igniteState = IgniteState.Wait;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
@@ -152,6 +314,10 @@ namespace UhhBang.Screens
             if (_lightAction.Occurred(input, ControllingPlayer, out player) && this.player.Inventory.Count > 0)
             {
                 _lit = true;
+            }
+            if (_continueAction.Occurred(input, ControllingPlayer, out player))
+            {
+                _continue = true;
             }
             if (_inventoryAction.Occurred(input, ControllingPlayer, out player))
             {
@@ -212,31 +378,12 @@ namespace UhhBang.Screens
 
                     _playerMovement = _playerMovement * (float)gameTime.ElapsedGameTime.TotalSeconds;
                     if (Math.Abs(_playerMovement.X) + Math.Abs(_playerMovement.Y) > 1) _playerMovement.Normalize();
+                    _playerMovement = new Vector2(_playerMovement.X, 0);
                 }
 
 
             }
-            if (_lit)
-            {
-                _timeSinceLit += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                int i = (int)(this.player.Inventory.Count * _timeSinceLit * TIME_SPLIT);
-                if (_lastIndex != i)
-                {
-                    _lastIndex = i;
-                    Vector2 randomPos = RandomHelper.RandomPosition(new Rectangle(300, 100, 50, 50));
-                    _explosion.Play();
-                    FireworkParticleSystem.PlaceFireWork(randomPos, this.player.Inventory[i]);
 
-                    _shakeTime = 0;
-                    _shaking = true;
-
-                    if (i == this.player.Inventory.Count - 1)
-                    {
-                        _lit = false;
-                        _timeSinceLit = 0;
-                    }
-                }
-            }
         }
 
         public override void Draw(GameTime gameTime)
@@ -247,22 +394,12 @@ namespace UhhBang.Screens
             // Our player and enemy are both actually just text strings.
             var spriteBatch = ScreenManager.SpriteBatch;
             var font = ScreenManager.Fonts["Britannic_Bold_12"];
-            string text = "[WASD] for Movement \n[Tab] or (start) to open Inventory to add effects\nPress [E] to start effects";
-            Vector2 textSize = font.MeasureString(text);
+            Vector2 textSize = font.MeasureString(_dispText);
             Vector2 textLoc = new Vector2((this.ScreenManager.GraphicsDevice.Viewport.Width / 2 - textSize.X / 2), 20);
 
-            Matrix shakeTransform = Matrix.Identity;
-            if (_shaking)
-            {
-                _shakeTime += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
-                // Matrix shakeRotation = Matrix.CreateRotationZ(MathF.Cos(_shakeTime));
-                Matrix shakeTranslation = Matrix.CreateTranslation(10 * MathF.Sin(_shakeTime), 10 * MathF.Cos(_shakeTime), 0);
-                shakeTransform = shakeTranslation;
-                if (_shakeTime > 3000) _shaking = false;
-            }
 
-            spriteBatch.Begin(transformMatrix: shakeTransform);
-            spriteBatch.DrawString(font, text, textLoc, Color.LightSlateGray);
+            spriteBatch.Begin();
+            spriteBatch.DrawString(font, _dispText, textLoc, Color.LightSlateGray);
             player.Draw(gameTime, spriteBatch);
             spriteBatch.End();
 

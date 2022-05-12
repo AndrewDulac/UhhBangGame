@@ -34,7 +34,15 @@ namespace UhhBang.Screens
 
         private void AddItemToInventory(object sender, PlayerIndexEventArgs e)
         {
-            _playerInventory.Add(((InventoryEntry)sender).Color);
+            Color color = ((InventoryEntry)sender).Color;
+            if (color == Color.Black)
+            {
+                _playerInventory.RemoveAll(c => true);
+            }
+            else
+            {
+                _playerInventory.Add(((InventoryEntry)sender).Color);
+            }
             
         }
 
